@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "gl_core_3_3.h"
+#include "ogl.h"
 
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 {
 	sf::err().rdbuf(NULL);
 
-	sf::ContextSettings settings(0, 0, 0, 3, 3);
+	sf::ContextSettings settings(0, 0, 0, 4, 3);
 	sf::Context context(settings, 0, 0);
 	
 	if (ogl_LoadFunctions() < 1)
@@ -85,9 +85,10 @@ string loadTextfile(string path)
 
 bool Contains(string input, vector<string> &keywords)
 {
-	for (const auto &key : keywords)
+	for (int i = 0; i < keywords.size(); i++)
 	{
-		size_t found = input.find(key);
+		string keyword = keywords[i];
+		size_t found = input.find(keyword);
 		if (found != string::npos)
 			return true;
 	}

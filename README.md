@@ -1,6 +1,6 @@
 # GLSLCompiler
 
-GLSLCompiler package for sublime text, using Opengl 3.3.
+GLSLCompiler package for sublime text.
 
 This package adds a .glsl file build-system. 
 
@@ -15,6 +15,8 @@ If no keyword were found. It will pass #define VERTEX_SHADER / FRAGMENT_SHADER a
 Install library sfml from home-brew to use shipped binary directlly.
 
 Or you can build the executable by yourself.
+
+If you encounter permission issues, just call 'chmod 755 path\to\glslcompiler'.
 
 ## Windows
 
