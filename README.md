@@ -1,10 +1,6 @@
 # GLSLCompiler
 
-<<<<<<< HEAD
-GLSLCompiler package for sublime text, using Opengl 3.3.
-=======
 GLSLCompiler package for sublime text.
->>>>>>> master
 
 This package adds a .glsl file build-system. 
 
@@ -20,14 +16,8 @@ Install library sfml from home-brew to use shipped binary directlly.
 
 Or you can build the executable by yourself.
 
-<<<<<<< HEAD
-## Windows
-
-Nothing todo so far.
-=======
 If you encounter permission issues, just call 'chmod 755 path\to\glslcompiler'.
 
 ## Windows
 
 Nothing todo so far.
->>>>>>> master
