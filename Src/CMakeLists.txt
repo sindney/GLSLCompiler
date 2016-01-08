@@ -12,7 +12,7 @@ if(OS_MACOSX)
 	find_package(OpenGL REQUIRED)
 endif()
 
-set(CMAKE_CXX_FLAGS                "-Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "-Wall -std=c++11")
 set(LIB_SFML "Sdk/SFML" CACHE PATH "Location of library SFML.")
 
 include_directories(${LIB_SFML}/include)
@@ -24,7 +24,7 @@ if(OS_MACOSX)
 	include_directories(${OPENGL_INCLUDE_DIR})
 endif()
 
-add_executable(glslcompiler main.cpp gl_core_3_3.cpp)
+add_executable(glslcompiler main.cpp ogl.cpp)
 
 if(OS_WINDOWS)
 	target_link_libraries(glslcompiler sfml-window sfml-system opengl32)
