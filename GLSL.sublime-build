@@ -1,5 +1,5 @@
 {
-	"cmd": ["$packages/GLSLCompiler/glslcompiler", "$file"], 
+	"cmd": ["$packages/GLSL Compiler/glslcompiler", "$file"], 
 	"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)", 
 	"selector": "source.glsl" 
 }
