@@ -15,7 +15,7 @@ string loadTextfile(string path);
 
 bool Contains(string input, vector<string> &keywords);
 
-bool CompileShader(bool isVertexShader, const char* raw, int rawSize, const char* defines, int definesSize);
+bool CompileShader(bool isVertexShader, const std::string &rawData, const std::string &defineStr);
 
 int main(int argc, char *argv[])
 {
@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
 	}
 
 	string filePath = argv[1];
-	vector<string> vtxKeywords = { "vs", "vertex" };
-	vector<string> frgKeywords = { "fs", "fragment", "pixel", "ps" };
+	vector<string> vtxKeywords = { "vs", "vert", "vertex" };
+	vector<string> frgKeywords = { "fs", "frag", "fragment", "pixel", "ps" };
 
 	std::transform(filePath.begin(), filePath.end(), filePath.begin(), ::tolower);
 
@@ -57,12 +57,12 @@ int main(int argc, char *argv[])
 
 	if (!isVertexShader && !isFragmentShader)
 	{
-		CompileShader(true, shaderSource.c_str(), shaderSource.size(), vtxDefines.c_str(), vtxDefines.size());
-		CompileShader(false, shaderSource.c_str(), shaderSource.size(), frgDefines.c_str(), frgDefines.size());
+		CompileShader(true, shaderSource, vtxDefines);
+		CompileShader(false, shaderSource, frgDefines);
 	}
 	else 
 	{
-		CompileShader(isVertexShader, shaderSource.c_str(), shaderSource.size(), 0, 0);
+		CompileShader(isVertexShader, shaderSource, "");
 	}
 
     return 0;
@@ -85,7 +85,7 @@ string loadTextfile(string path)
 
 bool Contains(string input, vector<string> &keywords)
 {
-	for (int i = 0; i < keywords.size(); i++)
+	for (unsigned int i = 0; i < keywords.size(); i++)
 	{
 		string keyword = keywords[i];
 		size_t found = input.find(keyword);
@@ -95,24 +95,48 @@ bool Contains(string input, vector<string> &keywords)
 	return false;
 }
 
-bool CompileShader(bool isVertexShader, const char* raw, int rawSize, const char* defines, int definesSize)
+void GetVersionInfo(const std::string &source, std::string &versionStr, std::string &mainStr)
+{
+	auto index = source.find("#version");
+	if (index != std::string::npos)
+	{
+		auto eol = source.find('\n', index);
+		if (eol != std::string::npos)
+		{
+			versionStr = source.substr(index, eol - index + 1);
+		}
+	}
+
+	if (versionStr.size() == 0)
+	{
+		versionStr = "#version 330";
+		mainStr = source;
+	}
+	else
+	{
+		auto start = index + versionStr.size();
+		auto size = source.size() - start;
+		mainStr = source.substr(0, index) + source.substr(start, size);
+	}
+}
+
+bool CompileShader(bool isVertexShader, const std::string &rawData, const std::string &defineStr)
 {
 	cout << (isVertexShader ? "Vertex Shader " : "Fragment Shader ");
 
 	GLuint shader = glCreateShader(isVertexShader ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
 
-	if (definesSize > 0)
+	if(shader == 0)
 	{
-		const char *sources[2] = { defines, raw };
-		const int counts[2] = { definesSize, rawSize };
-		glShaderSource(shader, 2, sources, counts);
+		cout << "Failed to create shader context." << endl;
+		return false;
 	}
-	else
-	{
-		const int counts[1] = { rawSize };
-		glShaderSource(shader, 1, &raw, counts);
-	}
-	
+
+	std::string versionStr, mainStr;
+	GetVersionInfo(rawData, versionStr, mainStr);
+	const char *sources[3] = { versionStr.c_str(), defineStr.c_str(), mainStr.c_str() };
+	const int counts[3] = { (int)versionStr.size(), (int)defineStr.size(), (int)mainStr.size() };
+	glShaderSource(shader, 3, sources, counts);
 	glCompileShader(shader);
 
 	GLint isCompiled;
